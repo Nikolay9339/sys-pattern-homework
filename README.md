@@ -64,36 +64,32 @@
 
 ```mermaid
 graph TD
-    Client[Клиентское приложение / Backend API] --> Proxy[Proxy / Router Layer<br/>(PgBouncer, ProxySQL или App-level routing)]
+    Client["Клиентское приложение / Backend API"] --> Proxy["Proxy / Router Layer: PgBouncer, ProxySQL"]
 
-    subgraph Вертикальное разделение (Domain Databases)
-        Proxy -->|Запросы: пользователи| Router_Users[Роутер Users_DB]
-        Proxy -->|Запросы: каталог| Router_Books[Роутер Catalog_DB]
-        Proxy -->|Запросы: магазины| Router_Stores[Роутер Stores_DB]
+    subgraph Vertical ["Вертикальное разделение (Domain Databases)"]
+        Proxy --> Router_Users["Роутер Users_DB"]
+        Proxy --> Router_Books["Роутер Catalog_DB"]
+        Proxy --> Router_Stores["Роутер Stores_DB"]
     end
 
-    subgraph Горизонтальное разделение и репликация
-        %% Users Shard
-        Router_Users --> U_Master[(Master 1: RW<br/>user_id hash 0-49)]
-        U_Master -. Асинхронная репликация .-> U_Slave1[(Slave 1: RO)]
-        U_Slave1 -. Репликация .-> U_Slave2[(Slave 2: RO)]
+    subgraph Horizontal ["Горизонтальное разделение и репликация"]
+        Router_Users --> U_Master["Master 1: RW (user_id hash 0-49)"]
+        U_Master -. "Асинхронная репликация" .-> U_Slave1["Slave 1: RO"]
         
-        Router_Users --> U_Master2[(Master 2: RW<br/>user_id hash 50-99)]
-        U_Master2 -. Асинхронная репликация .-> U_Slave3[(Slave 3: RO)]
+        Router_Users --> U_Master2["Master 2: RW (user_id hash 50-99)"]
+        U_Master2 -. "Асинхронная репликация" .-> U_Slave3["Slave 3: RO"]
 
-        %% Books Shard
-        Router_Books --> B_Master[(Master 3: RW<br/>Категории A-M)]
-        B_Master -. Асинхронная репликация .-> B_Slave1[(Slave 4: RO)]
+        Router_Books --> B_Master["Master 3: RW (Категории A-M)"]
+        B_Master -. "Асинхронная репликация" .-> B_Slave1["Slave 4: RO"]
         
-        Router_Books --> B_Master2[(Master 4: RW<br/>Категории N-Z)]
-        B_Master2 -. Асинхронная репликация .-> B_Slave2[(Slave 5: RO)]
+        Router_Books --> B_Master2["Master 4: RW (Категории N-Z)"]
+        B_Master2 -. "Асинхронная репликация" .-> B_Slave2["Slave 5: RO"]
 
-        %% Stores Shard
-        Router_Stores --> S_Master[(Master 5: RW<br/>Регион: Москва)]
-        S_Master -. Асинхронная репликация .-> S_Slave1[(Slave 6: RO)]
+        Router_Stores --> S_Master["Master 5: RW (Регион: Москва)"]
+        S_Master -. "Асинхронная репликация" .-> S_Slave1["Slave 6: RO"]
         
-        Router_Stores --> S_Master2[(Master 6: RW<br/>Регион: СПб)]
-        S_Master2 -. Асинхронная репликация .-> S_Slave2[(Slave 7: RO)]
+        Router_Stores --> S_Master2["Master 6: RW (Регион: СПб)"]
+        S_Master2 -. "Асинхронная репликация" .-> S_Slave2["Slave 7: RO"]
     end
 
     classDef master fill:#f9d0c4,stroke:#d35400,stroke-width:2px;
