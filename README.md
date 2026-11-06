@@ -36,7 +36,7 @@ echo -e "123456\npassword\nqwerty\nadmin123" > pass.txt
 ```
 2. Настройка Fail2Ban (Защищаемая система 192.168.56.10):
 Создан файл /etc/fail2ban/jail.local:
-
+```bash
 enabled = true
 port = ssh
 filter = sshd
@@ -44,7 +44,7 @@ logpath = /var/log/auth.log
 maxretry = 3
 bantime = 600
 findtime = 600
-
+```
 ```bash
 sudo systemctl restart fail2ban
 ```
