@@ -53,3 +53,6 @@ sudo systemctl restart fail2ban
 hydra -L users.txt -P pass.txt 192.168.56.10 ssh
 ```
 <img width="1436" height="574" alt="2026-11-06_12-56-50" src="https://github.com/user-attachments/assets/c926737e-cb65-4de1-a1de-2c59d8b631f8" />
+
+## В моем случае suricata не выводит ни какой информации. Скрин приложен ниже.
+<img width="1752" height="332" alt="2026-11-09_14-33-32" src="https://github.com/user-attachments/assets/5e14de02-f0bb-49e0-a415-09480b7b5521" />
